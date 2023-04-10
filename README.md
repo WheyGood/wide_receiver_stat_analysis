@@ -28,6 +28,12 @@ output.
 - ggplot2 3.36
 - dplyr 1.0.10
 
+## WR Stat Analysis Report
+<img width="100">
 
-
+![](images/wr_project_p1.png)
+![](images/wr_project_p2.png)
+![](images/wr_project_p3.png)
+![](images/wr_project_p4.png)
+![](images/wr_project_p5.png)
 
