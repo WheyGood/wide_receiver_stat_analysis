@@ -29,8 +29,6 @@ output.
 - dplyr 1.0.10
 
 ## WR Stat Analysis Report
-<img src="images/wr_project_p1.png" width="500">
-
 ![](images/wr_project_p1.png)
 ![](images/wr_project_p2.png)
 ![](images/wr_project_p3.png)
