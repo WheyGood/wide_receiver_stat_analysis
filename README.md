@@ -6,8 +6,6 @@ adavanced wide receiver statistic is most influencial for the players fantasy po
 output.  
 
 
-
-
 ## Authors
 
 - [@WheyGood (Matt S)](https://www.github.com/WheyGood)
@@ -16,6 +14,7 @@ output.
 ## Acknowledgements
 
  - [Readme Editor Tool](https://readme.so/)
+ - [smplot2, created by Seung Hyun Min](https://github.com/smin95/smplot2)
 
 ## Tech Stack
 
@@ -27,6 +26,12 @@ output.
 **R** 
 - ggplot2 3.36
 - dplyr 1.0.10
+- devtools 2.4.5
+- smplot2 0.1.0
+- knitr 1.42
+- stargazer 5.2.3
+
+**SQL Server Managment Studio 18**
 
 ## WR Stat Analysis Report
 ![](images/wr_project_p1.png)
