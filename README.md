@@ -29,7 +29,7 @@ output.
 - dplyr 1.0.10
 
 ## WR Stat Analysis Report
-<img width="100">
+<img src="images/wr_project_p1.png" width="100">
 
 ![](images/wr_project_p1.png)
 ![](images/wr_project_p2.png)
