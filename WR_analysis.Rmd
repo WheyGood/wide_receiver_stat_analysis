@@ -1,0 +1,173 @@
+---
+title: "2022 Fantasy Football Wide Receiver Analysis"
+author: "Matt Schmidt @WheyGood"
+date: "2023-03-25"
+output: pdf_document
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#Load the data source csv file and all the libraries for the project
+df <- read.csv("~/R_Data/WR_analysis_data.csv")
+
+library(ggplot2)
+library(dplyr)
+library(devtools)
+library(smplot2)
+library(knitr)
+library(stargazer)
+#library(kableExtra)
+#library(tinytex)
+
+#Change the Theme (background) of the Charts
+theme_set(theme_minimal())
+```
+
+# Introduction
+
+Fantasy football is a statistics focused game based on the real life production
+of professional National Football League players.  Success is found when the
+user can more accurately predict the seasonal statistical output of said 
+players than their opponents.  This report aims to identify specific advanced 
+receiver stats that may aid in the prediction of future fantasy point output.  
+
+Pearson correlation will be used along with regression analysis to determine 
+which statistic will be most important to predict future fantasy success. 
+The distribution of points and targets will also be examined to view outlier 
+values which, in this case, are very much desired. 
+
+## Pearson Correlation Analysis of Advanced WR Stats with Fantasy Point Output
+```{r, echo=FALSE,message=FALSE,warning=FALSE, fig.show="hold", out.width="50%"}
+
+#Create the Air Yards vs Fantasy Points Correlation Graph
+p1 <- ggplot(data=df, mapping=aes(x=air_yards, y=points)) + 
+      geom_point(shape= 19, size=3, color='#311D00', alpha=.75) + 
+      sm_statCorr(color='#FF3C00', separate_by = '\n')+
+      labs(title="Air Yards and Fanasty Points Correlation", 
+           x="Air Yards", y="Fantasy Points")
+#Create the ADOT vs Fantasy Points Correlation Graph
+p4 <- ggplot(data=df, mapping=aes(x=air_per_rec, y=points)) + 
+  geom_point(shape= 19, size=3, color='#311D00', alpha=.75) + 
+  sm_statCorr(color='#FF3C00', separate_by = '\n')+
+  labs(title="Average Depth of Target and Fanasty Points Correlation", 
+       x="ADOT (yards)", y="Fantasy Points")
+#Create the Targets vs Fantasy Points Correlation Graph
+p2 <- ggplot(data=df, mapping=aes(x=targets, y=points)) + 
+  geom_point(shape= 19, size=3, color='#311D00', alpha=.75) + 
+  sm_statCorr(color='#FF3C00', separate_by = '\n')+
+  labs(title="Targets and Fanasty Points Correlation", 
+       x="Targets", y="Fantasy Points")
+#Create the Percent of Team Targets vs Fantasy Points Correlation Graph
+p5 <- ggplot(data=df, mapping=aes(x=percent_team_targets, y=points)) + 
+  geom_point(shape= 19, size=3, color='#311D00', alpha=.75) + 
+  sm_statCorr(color='#FF3C00', separate_by = '\n')+
+  labs(title="Percentage of Team Targets and Fanasty Points Correlation", 
+       x="Percentage of Team Targets", y="Fantasy Points")
+
+p1
+p4
+p2
+p5
+
+
+```
+
+```{r, echo=FALSE}
+table1 <- data.frame(Statistic = c("Air Yards", "Average Depth of Target", 
+                                   "Targets", "Percentage of Team Targets")
+                      ,Correlation_Coefficient = c(0.95, 0.013, 0.97, 0.95)
+                      ,P_value = c(0.001, 0.86, 0.001, 0.001))
+
+#kable(table1)
+kable(table1)
+```
+
+
+##### Table 1: Correlation coefficents and p values of corresponding fantasy statistics
+
+
+
+## Regression Analysis of Advanced WR Stats
+```{r, echo=FALSE, message=FALSE, results='asis'}
+# Create Smaller subset of wrs Database
+dataset <- df %>% select(points, air_yards, air_per_rec, targets, 
+                          percent_team_targets, red_zone_targets)
+
+dataset$percent_team_targets_mult <- dataset$percent_team_targets * 100
+
+reg1 <- lm(points ~ air_yards, data=dataset)
+reg2 <- lm(points ~ air_per_rec, data=dataset)
+reg3 <- lm(points ~ targets, data=dataset)
+reg4 <- lm(points ~ percent_team_targets_mult, data=dataset)
+
+stargazer(reg1, reg2, reg3, reg4, 
+          title="Single Regression Results per Variable",
+          type="latex",
+          header=FALSE)
+
+```
+
+
+
+## Distribution of Points and Targets
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE, fig.show="hold", out.width="100%"}
+
+dist1 <- ggplot(data = df, mapping = aes(x = " ", y = points)) + 
+          sm_boxplot(shape=19, color='#FF3C00') + 
+          ggtitle('Distribution of Points for all Players')
+
+dist2 <- ggplot(data = df, mapping = aes(x = " ", y = targets)) + 
+          sm_boxplot(shape=19, color='#FF3C00') + 
+          ggtitle('Distribution of Targets for all Players')
+
+
+dist1
+dist2
+
+```
+\newpage
+
+```{r, echo=FALSE, message=FALSE, fig.align="center"}
+rank1 <- df[order(df$targets, decreasing = TRUE), 
+             c('player', 'team', 'targets')] %>% top_n(20)
+
+rank2 <- df[order(df$air_yards, decreasing = TRUE), 
+             c('player', 'team', 'air_yards')] %>% top_n(20)
+
+rank3 <- df[order(df$percent_team_targets, decreasing = TRUE), 
+             c('player', 'team', 'percent_team_targets')] %>% top_n(20)
+
+kable(list(rank2, rank3), booktabs=TRUE, align="llc", linesep = "",)
+kable(rank1, booktabs=TRUE, align="llc", linesep = "")
+
+```
+
+\newpage
+
+# Conclusion
+
+The correlation and regression analysis of the 2022 wide receiver data
+demonstrates the importance of usage in the offense. The targets and air yards 
+a player receives most indicate fantasy football success. These variables both 
+have significant correlation coefficients and with a large R squared value shows
+when these variables increase, the points will follow.  
+
+The distribution of wide receiver points shows a nice cluster of around six
+elite scoring output-generating players.  These players should be valued highly
+and selected early in fantasy drafts, as the next grouping of players many 
+very similar outputs. Either take an high powered receiver early in drafts our
+wait a couple rounds to select one of many with close target numbers.
+
+Future work will be done to determine if one can predict future target 
+share for a player in a specific offense.  This will require more team specific
+coaching data with a sprinkling of quarterback data.  The trends in passing 
+versus running plays for specific coaches will be important to examine for the 
+prediction. 
+
+
+
