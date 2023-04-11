@@ -1,9 +1,14 @@
 
 # Wide Receiver Advanced Stat Analysis
 
-Statistical correlation and regression analysis project with the goal of determining which
+Statistical pearson correlation and regression analysis project with the goal of determining which
 adavanced wide receiver statistic is most influencial for the players fantasy point
 output.  
+
+Python, SQL, and R were the tools used to scrape, clean, study, and visualize the processed
+wide receiver data.  
+
+See pdf for detailed description of findings! 
 
 
 ## Authors
@@ -40,3 +45,5 @@ output.
 ![](images/wr_project_p4.png)
 ![](images/wr_project_p5.png)
 
+## SQL Query Example
+![](images/wr_sql_ex.png)
